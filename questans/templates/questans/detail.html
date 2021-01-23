@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>QnA</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+<script src="https://kit.fontawesome.com/0318f80b4c.js" crossorigin="anonymous"></script>
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+<!-- Bootstrap core CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+<!-- Material Design Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Black Ops One' rel='stylesheet'>
+<link href='https://fonts.googleapis.com/css?family=Palanquin' rel='stylesheet'>
+<link rel="icon" href="FAVICON.png" type="image/gif" sizes="16x16" style="border-radius: 50%;"> 
+</head>
+
+ <body>
+   <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark primary-color">
+
+  <!-- Navbar brand -->
+  <a class="navbar-brand" href="{% url 'questans:index'%}">QandA</a>
+
+  <!-- Collapse button -->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+    aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- Collapsible content -->
+  <div class="collapse navbar-collapse" id="basicExampleNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'questans:displayaddquestion'%}">Ask Question</a>
+      </li>
+    </ul>
+  <!-- Collapsible content -->
+</nav>
+<!--/.Navbar-->
+
+ <!-- Questions Detail -->
+    <section id="questions">
+      <div class="container">
+         <div class="row">     
+          	<div class="col-md-12 text-center">
+                 <h4 class="service-heading">{{ question.question_name }}</h4>
+            </div>	
+           </div>
+        	 	<div class="col-md-12">
+        	 		<div class="row">
+        	 			<button type="submit" class="btn btn-vote" id="upvotebutton" data-questionid="{{ question.id }}"><i class="fas fa-angle-up"></i></button>
+        	 		</div>
+        	 		<div class="row">
+        	 		    <button type="button" class="btn btn-vote" disabled>{{question.votes}}</button>       	 		   	 		
+        	 		<div class="col-md-6 text-center">
+                 		<h4 class="service-heading">{{ question.question_text }}</h4>
+            		</div>	
+            		</div>      
+        	 		<div class="row">
+        	 		    <button type="submit" class="btn btn-vote" id="downvotebutton" data-questionid="{{ question.id }}"><i class="fas fa-angle-down"></i></button>
+        	 		</div>
+        	  </div>   
+        	  <!-- <p class="tags">Tags: {{ post.tags.all|join:", " }}</p> -->	 		             
+
+        <hr style="width: 100%; color: #eeeeee; height: 1px; background-color:#eeeeee;" />	
+        		    
+        <div class="row">
+         <div class="col-md-12">
+       	  <form action="{% url 'questans:answer' question.id %}" method="post">
+			{% csrf_token %}
+			{% if question.answer_set.all  %}
+			    <h4 class="service-heading">Answers:</h4>
+			{% else %}
+			    <h4 class="service-heading">No Answers yet...</h4>
+			{% endif %}
+		    {% for answer in question.answer_set.all %}			
+				<h4 class="service-heading">{{ forloop.counter }}. {{ answer.answer_text }}</h4>
+		    {% endfor %}
+		   </div>
+		   </div>
+		    <div class="row">
+         		<div class="col-md-12 text-center">
+					{{ value|linebreaks }}
+					<div class="form-group">
+						<h4><label for="answertext">Your Answer:</label></h4>
+           		 		<textarea class="form-control" id="answertext" rows="5" name="answertext" required></textarea>
+           		 	</div>
+					{{ value|linebreaks }}
+					<input type="submit" class="btn btn-primary btn-xl text-uppercase" value="Submit Answer" />
+		        </div>
+		    </div>
+		  </form>       
+		 </div>
+    </section>    
+        
+        
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+</body>
+</html>
