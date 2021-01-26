@@ -14,50 +14,53 @@ class index(generic.ListView):
 
     def get_queryset(self): #most recent 5 que view 
         return Question.objects.filter(
-            pub_date__lte=timezone.now()
-            ).order_by('-pub_date')[:5]
+            pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 class detail(generic.DetailView):
     model = Question
-    template_name = 'questans/detail.html'
-    
+    template_name = 'questans/detail.html'    
     def get_queryset(self):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
-def voteup(request):
-    if request.is_ajax():
-        question_id = request.GET['question_id']
-        question = get_object_or_404(Question, pk=question_id)
-        question.votes += 1
-        question.save()
-        return JsonResponse({'status':'Success', 'msg': 'save successfully'})
-    else:
-        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
 
-def votedown(request):
-    if request.is_ajax():
-        question_id = request.GET['question_id']
-        question = get_object_or_404(Question, pk=question_id)
-        question.votes -= 1
-        question.save()
-        return JsonResponse({'status':'Success', 'msg': 'save successfully'})
-    else:
-        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
-    
-def answer(request, question_id): 
-    question = get_object_or_404(Question, pk=question_id)
+def save_upvote(request):
+    if request.method =='POST':
+        questionid=request.POST['questionid']
+        question=Question.objects.get(pk=questionid)
+        check=UpVote.objects.filter(question=question).count()
+        if check > 0:
+            return JsonResponse({'bool':False})
+        else:
+            UpVote.objects.create(
+                question=question)
+            return JsonResponse({'bool':True})
+
+def save_downvote(request):
+    if request.method =='POST':
+        questionid=request.POST['questionid']
+        question=Question.objects.get(pk=questionid)
+        check=DownVote.objects.filter(question=question).count()
+        if check > 0:
+            return JsonResponse({'bool':False})
+        else:
+            DownVote.objects.create(
+                question=question)
+            return JsonResponse({'bool':True}) 
+
+
+def answer(request, question_id):
+    question = get_object_or_404(Question,pk=question_id)
     try:
         answer_text = request.POST.get('answertext')
-        if answer_text:  
-            answer = models.Answer.objects.create(question=question, 
-                                                  answer_text=answer_text)
+        if answer_text: 
+            answer = models.Answer.objects.create(question_id=question.pk, 
+                                                  answer_text=request.POST.get('answertext'))
             answer.save()
     except (KeyError, Answer.DoesNotExist):
         return HttpResponseRedirect(reverse('questans:index'))
-    
     return HttpResponseRedirect(reverse('questans:results', args=(question.id,)))
 
-class results(generic.DetailView): #after adding que or ans
+class results(generic.DetailView): #after adding ans successfully
     model = Question
     template_name = 'questans/results.html'
 

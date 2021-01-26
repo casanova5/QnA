@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Answer
+from .models import Question, Answer, UpVote, DownVote
 
 class AnswerInline(admin.TabularInline):
     model = Answer
@@ -16,6 +16,15 @@ class QuestionAdmin(admin.ModelAdmin): #display and filtering of questions
     list_display = ('question_name', 'question_text', 'pub_date')
     # filter questions by date published 
     list_filter = ['pub_date']
+admin.site.register(Question, QuestionAdmin)
+
+class UpvoteAdmin(admin.ModelAdmin):
+    list_display=('question',)
+admin.site.register(UpVote,UpvoteAdmin)
+
+class DownvoteAdmin(admin.ModelAdmin):
+    list_display=('question',)
+admin.site.register(DownVote,DownvoteAdmin)
+
     
 # Add the ability to add questions and answers to the admin view 
-admin.site.register(Question, QuestionAdmin)
