@@ -23,29 +23,25 @@ class detail(generic.DetailView):
         return Question.objects.filter(pub_date__lte=timezone.now())
 
 
-def save_upvote(request):
-    if request.method =='POST':
-        questionid=request.POST['questionid']
-        question=Question.objects.get(pk=questionid)
-        check=UpVote.objects.filter(question=question).count()
-        if check > 0:
-            return JsonResponse({'bool':False})
-        else:
-            UpVote.objects.create(
-                question=question)
-            return JsonResponse({'bool':True})
+def voteup(request):
+    if request.is_ajax():
+        question_id = request.GET['question_id']
+        question = get_object_or_404(Question, pk=question_id)
+        question.votes += 1
+        question.save()
+        return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+    else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
 
-def save_downvote(request):
-    if request.method =='POST':
-        questionid=request.POST['questionid']
-        question=Question.objects.get(pk=questionid)
-        check=DownVote.objects.filter(question=question).count()
-        if check > 0:
-            return JsonResponse({'bool':False})
-        else:
-            DownVote.objects.create(
-                question=question)
-            return JsonResponse({'bool':True}) 
+def votedown(request):
+    if request.is_ajax():
+        question_id = request.GET['question_id']
+        question = get_object_or_404(Question, pk=question_id)
+        question.votes -= 1
+        question.save()
+        return JsonResponse({'status':'Success', 'msg': 'save successfully'})
+    else:
+        return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
 
 
 def answer(request, question_id):

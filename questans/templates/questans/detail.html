@@ -17,6 +17,7 @@
 <link href='https://fonts.googleapis.com/css?family=Black Ops One' rel='stylesheet'>
 <link href='https://fonts.googleapis.com/css?family=Palanquin' rel='stylesheet'>
 <link rel="icon" href="FAVICON.png" type="image/gif" sizes="16x16" style="border-radius: 50%;"> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 
  <body>
@@ -101,7 +102,45 @@
 	  </form>
 	</div> 
 </section>
-        
+<script>
+	$('[id^=upvotebutton]').click(function(){
+	  var questionid;
+	  questionid = $(this).attr("data-questionid");
+	  $.ajax({
+		  url: "/questans/voteup/",
+		  type:"GET",
+			dataType:'json',
+			data:{
+				  question_id: questionid
+			},
+			success: function( data ) 
+			{
+			setTimeout(function(){
+			location.reload();
+			}); 	   
+			}	  
+	  })
+	});
+			
+			$('[id^=downvotebutton]').click(function(){
+			  var questionid;
+			  questionid = $(this).attr("data-questionid");
+			  $.ajax({
+				  url: "/questans/votedown/",
+				  type:"GET",
+					dataType:'json',
+					data:{
+						  question_id: questionid
+					},
+					success: function( data ) 
+					{
+					setTimeout(function(){
+					location.reload(); 
+					}); 	   
+					}	  
+			  })
+			});
+  </script>  
         
 	<!-- Bootstrap core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -111,6 +150,5 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
 	<!-- MDB core JavaScript -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
-	<script type="text/javascript" src="script.js"></script>
 </body>
 </html>
